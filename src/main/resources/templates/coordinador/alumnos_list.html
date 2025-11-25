@@ -272,5 +272,30 @@
     mostrarPagina(1);
 </script>
 
+<script>
+    const inputBusqueda = document.getElementById('busqueda');
+    const filas = document.querySelectorAll('#tablaAlumnos tbody tr');
+
+    inputBusqueda.addEventListener('keyup', function () {
+        const filtro = this.value.toLowerCase();
+
+        filas.forEach(fila => {
+            const documento = fila.cells[0].textContent.toLowerCase();
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const correo = fila.cells[2].textContent.toLowerCase();
+            const registro = fila.cells[4].textContent.toLowerCase();
+
+            // Si coincide con documento, nombre, correo o registro → se muestra
+            const coincide =
+                documento.includes(filtro) ||
+                nombre.includes(filtro) ||
+                correo.includes(filtro) ||
+                registro.includes(filtro);
+
+            fila.style.display = coincide ? '' : 'none';
+        });
+    });
+</script>
+
 </body>
 </html>
