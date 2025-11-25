@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Alumnos</title>
+
+    <style>
+        /* ===================== PALETA MORADA ===================== */
+        :root {
+            --morado: #6a1b9a;
+            --morado-oscuro: #4a1470;
+            --morado-claro: #d8b4e2;
+            --morado-acento: #b388ff;
+            --texto: #1e1a29;
+            --bg: #faf7fc;
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: 'Open Sans', 'Segoe UI', sans-serif;
+            color: var(--texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main { flex: 1; }
+
+        /* ===================== HEADER ===================== */
+        header {
+            background-color: var(--morado);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+        header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .header-acciones { display: flex; gap: 10px; }
+
+        .btn-volver {
+            background-color: #fff;
+            color: var(--morado);
+            border: 2px solid var(--morado);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: .2s;
+        }
+        .btn-volver:hover { background-color: var(--morado-claro); }
+
+        .btn-cerrar {
+            background-color: var(--morado-acento);
+            color: var(--morado-oscuro);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: .2s;
+        }
+        .btn-cerrar:hover { background-color: #a27cf5; }
+
+        /* ===================== CONTENEDOR ===================== */
+        .contenedor-principal {
+            width: 95%;
+            max-width: 1400px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: var(--morado-oscuro);
+            margin-bottom: 12px;
+            border-bottom: 3px solid var(--morado-acento);
+            padding-bottom: 6px;
+        }
+
+        /* ===================== BUSCADOR ===================== */
+        .filtro {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .filtro label { font-weight: 600; color: var(--morado-oscuro); }
+        .filtro input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--morado);
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .filtro input:focus {
+            border-color: var(--morado-acento);
+            box-shadow: 0 0 6px rgba(179,136,255,0.6);
+        }
+
+        /* ===================== TABLA ===================== */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th {
+            background-color: var(--morado-claro);
+            color: var(--morado-oscuro);
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--morado);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:hover { background-color: #f4e8fb; }
+
+        /* ===================== ACCIONES ===================== */
+        .acciones { display: flex; gap: 6px; }
+        .btn-accion {
+            background-color: var(--morado);
+            color: white;
+            padding: 7px 13px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: .2s;
+        }
+        .btn-accion:hover { background-color: var(--morado-oscuro); }
+
+        .btn-eliminar { background-color: #c62828; }
+        .btn-eliminar:hover { background-color: #991f1f; }
+
+        /* ===================== BOTÓN CREAR ABAJO ===================== */
+        .zona-inferior {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-crear {
+            background-color: var(--morado);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: .2s;
+        }
+        .btn-crear:hover { background-color: var(--morado-oscuro); }
+
+        /* ===================== PAGINACIÓN ===================== */
+        .btn-pagina {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid var(--morado);
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: var(--morado);
+            font-weight: 600;
+            cursor: pointer;
+            transition: .2s;
+        }
+        .btn-pagina:hover:not(:disabled) { background-color: var(--morado-claro); }
+        .btn-pagina:disabled { background-color: var(--morado); color: white; }
+
+        /* ===================== FOOTER ===================== */
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: var(--morado);
+            color: white;
+            margin-top: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Gestión de Alumnos</h1>
+    <div class="header-acciones">
+        <a href="/coordinador/panel" class="btn-volver">← Volver</a>
+        <a th:href="@{/logout}" class="btn-cerrar">Cerrar sesión</a>
+    </div>
+</header>
+
+<main>
+    <div class="contenedor-principal">
+        <h2>Alumnos</h2>
+
+        <div class="filtro">
+            <label for="busqueda">Buscar:</label>
+            <input type="text" id="busqueda" placeholder="Escriba nombre, registro o cédula...">
+        </div>
+
+        <table id="tablaAlumnos">
+            <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="a : ${alumnos}">
+                    <td th:text="${a.numdoc}"></td>
+                    <td th:text="${a.pnomb + ' ' + a.papellido}"></td>
+                    <td th:text="${a.correo}"></td>
+                    <td th:text="${a.telefono}"></td>
+                    <td th:text="${a.registro}"></td>
+                    <td class="acciones">
+                        <a th:href="@{'/coordinador/alumnos/editar/' + ${a.id}}" class="btn-accion">✏️ Editar</a>
+                        <a th:href="@{'/coordinador/alumnos/eliminar/' + ${a.id}}" class="btn-accion btn-eliminar"
+                           onclick="return confirm('¿Seguro que deseas eliminar este alumno?')">🗑 Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- BOTÓN + PAGINACIÓN ABAJO -->
+        <div class="zona-inferior">
+            <div id="paginacion"></div>
+
+            <a href="/coordinador/alumnos/nuevo" class="btn-crear">➕ Crear Alumno</a>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const filasTabla = Array.from(document.querySelectorAll('#tablaAlumnos tbody tr'));
+    const filasPorPagina = 15;
+    let paginaActual = 1;
+    const totalPaginas = Math.ceil(filasTabla.length / filasPorPagina);
+
+    function mostrarPagina(pagina) {
+        const inicio = (pagina - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        filasTabla.forEach((fila, index) => {
+            fila.style.display = index >= inicio && index < fin ? '' : 'none';
+        });
+
+        actualizarBotones();
+    }
+
+    function actualizarBotones() {
+        const contenedor = document.getElementById('paginacion');
+        contenedor.innerHTML = '';
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'btn-pagina';
+            if (i === paginaActual) btn.disabled = true;
+            btn.addEventListener('click', () => {
+                paginaActual = i;
+                mostrarPagina(i);
+            });
+            contenedor.appendChild(btn);
+        }
+    }
+
+    mostrarPagina(1);
+</script>
+
+</body>
+</html>

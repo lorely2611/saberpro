@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Portal Académico</title>
+
+    <style>
+        /* ======= BODY ======= */
+        body {
+            background-color: #f3e5f5; /* Lila suave */
+            font-family: 'Open Sans', 'Segoe UI', sans-serif;
+            color: #2a1e35;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* ======= CONTENEDOR LOGIN ======= */
+        .login-contenedor {
+            background-color: #ffffff;
+            border-radius: 14px;
+            padding: 40px 50px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            border-top: 6px solid #6a0dad;
+        }
+
+        /* ======= ENCABEZADO ======= */
+        h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.7rem;
+            color: #6a0dad;
+            font-weight: 700;
+        }
+
+        .subtitulo {
+            color: #5a4a72;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        hr {
+            border: 0;
+            border-top: 2px solid #ffb6c1; /* Rosa suave */
+            width: 60%;
+            margin: 15px auto 25px auto;
+        }
+
+        /* ======= FORMULARIO ======= */
+        form label {
+            display: block;
+            text-align: left;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2a1e35;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 11px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            border: 1px solid #c9a9df;
+            background: #faf4ff;
+            color: #2a1e35;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #9b4dca;
+            box-shadow: 0 0 6px rgba(155,77,202,0.5);
+            background-color: #fff;
+        }
+
+        /* ======= BOTÓN ======= */
+        button {
+            width: 100%;
+            background-color: #6a0dad;
+            border: none;
+            color: white;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            background-color: #5a0ca0;
+            transform: scale(1.03);
+        }
+
+        /* ======= ERROR ======= */
+        .error {
+            background: #ffe8e8;
+            color: #c62828;
+            border: 1px solid #efb8b8;
+            padding: 8px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+
+        /* ======= FOOTER ======= */
+        footer {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #5a4a72;
+        }
+
+        footer p {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 450px) {
+            .login-contenedor {
+                width: 90%;
+                padding: 30px 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-contenedor">
+
+        <h1>Pruebas SaberPRO</h1>
+        <p class="subtitulo">Accede con tu usuario institucional</p>
+        <hr>
+
+        <form th:action="@{/login}" method="post">
+
+            <label for="numdoc">Número de Documento</label>
+            <input type="text" id="numdoc" name="numdoc" placeholder="Ingrese su número de documento" required>
+
+            <label for="password">Contraseña</label>
+            <input type="password" id="password" name="password" placeholder="Ingrese su contraseña" required>
+
+            <button type="submit">Ingresar</button>
+
+            <div class="error" th:if="${error}">
+                <p th:text="${error}"></p>
+            </div>
+
+        </form>
+
+        <footer>
+            <p>Examenes SaberPRO</p>
+        </footer>
+
+    </div>
+</body>
+</html>

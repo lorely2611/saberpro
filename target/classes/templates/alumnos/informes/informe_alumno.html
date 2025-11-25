@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe Único</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2eefb;
+            color: #1e1b2e;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .informe-container {
+            background-color: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 8px 18px rgba(90, 50, 150, 0.15);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            border: 3px solid #e7d4ff;
+        }
+
+        /* ================== HEADER ================== */
+        .informe-header {
+            background-color: #5b2ecc;
+            color: #fff;
+            padding: 28px 30px;
+            text-align: center;
+        }
+
+        .informe-header h2 {
+            margin: 0;
+            font-size: 1.9rem;
+            font-weight: 700;
+        }
+
+        /* ================== SECCIONES ================== */
+        .seccion {
+            padding: 28px 35px;
+            border-bottom: 1px solid #e9defc;
+        }
+        .seccion:last-child {
+            border-bottom: none;
+        }
+
+        .seccion h3 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.3rem;
+            color: #5b2ecc;
+            border-left: 5px solid #7d4bff;
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        /* ================== DATOS ================== */
+        .datos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px 20px;
+        }
+
+        .dato {
+            background-color: #eee7ff;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.97rem;
+        }
+
+        .dato strong {
+            color: #5b2ecc;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        /* ================== TARJETAS RESULTADOS ================== */
+        .resultados-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .resultado-card {
+            background-color: #f4eeff;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(90, 50, 150, 0.1);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .resultado-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(90, 50, 150, 0.18);
+        }
+
+        .resultado-card strong {
+            display: block;
+            font-size: 1rem;
+            color: #5b2ecc;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .resultado-card span {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1e1b2e;
+        }
+
+        .anulado {
+            color: #b40000 !important;
+            font-weight: bold;
+        }
+
+        /* ================== VOLVER ================== */
+        .volver-container {
+            text-align: center;
+            padding: 25px 0;
+            background-color: #f2eefb;
+        }
+
+        .btn-volver {
+            display: inline-block;
+            background-color: #7d4bff;
+            color: #fff;
+            padding: 11px 26px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+        .btn-volver:hover {
+            background-color: #5b2ecc;
+        }
+
+        @media (max-width: 600px) {
+            .datos-grid { grid-template-columns: 1fr; }
+            .resultados-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="informe-container">
+
+    <!-- Header -->
+    <div class="informe-header">
+        <h2>Informe Único de Alumno</h2>
+    </div>
+
+    <!-- Datos del alumno -->
+    <div class="seccion">
+        <h3>Datos del Alumno</h3>
+
+        <div class="datos-grid">
+            <div class="dato">
+                <strong>Nombre</strong>
+                <span th:text="${examen.usuario.pnomb + ' ' + examen.usuario.snomb + ' ' + examen.usuario.papellido + ' ' + examen.usuario.sapellido}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Documento</strong>
+                <span th:text="${examen.usuario.tdoc + ' ' + examen.usuario.numdoc}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Correo</strong>
+                <span th:text="${examen.usuario.correo}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Teléfono</strong>
+                <span th:text="${examen.usuario.telefono}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Registro</strong>
+                <span th:text="${examen.usuario.registro}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resultados -->
+    <div class="seccion">
+        <h3>Resultados del Examen</h3>
+
+        <div class="resultados-grid">
+
+            <div class="resultado-card">
+                <strong>Puntaje Total</strong>
+                <span th:if="${examen.anulado}" class="anulado">ANULADO</span>
+                <span th:unless="${examen.anulado}" th:text="${examen.puntajetotal}"></span>
+            </div>
+
+            <div class="resultado-card">
+                <strong>Nivel</strong>
+                <span th:if="${examen.anulado}">---</span>
+                <span th:unless="${examen.anulado}"
+                      th:text="${examen.puntajetotal >= 0 and examen.puntajetotal <=125 ? 'Nivel 1' :
+                               examen.puntajetotal >=126 and examen.puntajetotal <=155 ? 'Nivel 2' :
+                               examen.puntajetotal >=156 and examen.puntajetotal <=190 ? 'Nivel 3' :
+                               examen.puntajetotal >=191 and examen.puntajetotal <=300 ? 'Nivel 4' : 'Error'}">
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="volver-container">
+        <a th:href="@{'/alumno/panel/' + ${examen.usuario.id}}" class="btn-volver">⬅ Volver</a>
+    </div>
+
+</div>
+
+</body>
+</html>

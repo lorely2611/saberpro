@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe Detallado</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2eefb;
+            margin: 0;
+            padding: 25px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .contenedor {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            border-radius: 14px;
+            padding-bottom: 25px;
+            box-shadow: 0 8px 18px rgba(90, 50, 150, 0.15);
+        }
+
+        .encabezado {
+            background: #5b2ecc;
+            color: white;
+            padding: 28px;
+            text-align: center;
+            border-radius: 14px 14px 0 0;
+        }
+
+        .encabezado h2 {
+            margin: 0;
+            font-size: 1.9rem;
+            font-weight: 700;
+        }
+
+        .seccion {
+            padding: 28px 35px;
+        }
+
+        .titulo-seccion {
+            font-size: 1.25rem;
+            color: #5b2ecc;
+            font-weight: 700;
+            margin-bottom: 18px;
+            border-left: 5px solid #7d4bff;
+            padding-left: 10px;
+        }
+
+        .grid-datos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+        }
+
+        .dato {
+            background: #eee7ff;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+
+        .dato strong {
+            color: #5b2ecc;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Resumen */
+        .grid-resumen {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+        }
+
+        .resumen {
+            background: #eee7ff;
+            padding: 22px 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .resumen .valor {
+            margin-top: 10px;
+            display: block;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #5b2ecc;
+        }
+
+        .anulado {
+            color: #b40000 !important;
+        }
+
+        /* Materias */
+        .grid-materias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .materia {
+            background: #f4eeff;
+            padding: 16px 20px;
+            border-radius: 12px;
+        }
+
+        .materia h4 {
+            margin: 0 0 8px;
+            color: #5b2ecc;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .volver {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .btn-volver {
+            background: #7d4bff;
+            color: white;
+            padding: 11px 26px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-volver:hover {
+            background: #5b2ecc;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <div class="encabezado">
+        <h2>Informe Detallado de Alumno</h2>
+        <p th:text="${examen.usuario.pnomb + ' ' + examen.usuario.snomb + ' ' + examen.usuario.papellido + ' ' + examen.usuario.sapellido}"></p>
+    </div>
+
+    <!-- Datos del alumno -->
+    <div class="seccion">
+        <div class="titulo-seccion">Datos del Alumno</div>
+
+        <div class="grid-datos">
+            <div class="dato">
+                <strong>Documento</strong>
+                <span th:text="${examen.usuario.tdoc + ' ' + examen.usuario.numdoc}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Correo</strong>
+                <span th:text="${examen.usuario.correo}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Teléfono</strong>
+                <span th:text="${examen.usuario.telefono}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Registro</strong>
+                <span th:text="${examen.usuario.registro}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen General -->
+    <div class="seccion">
+        <div class="titulo-seccion">Resumen General</div>
+
+        <div class="grid-resumen">
+            <div class="resumen">
+                Puntaje Total  
+                <span class="valor"
+                      th:text="${examen.anulado ? 'ANULADO' : examen.puntajetotal}"
+                      th:classappend="${examen.anulado} ? ' anulado' : ''"></span>
+            </div>
+
+            <div class="resumen">
+                Nivel Total
+                <span class="valor"
+                      th:text="${examen.anulado ? '---' :
+                        (examen.puntajetotal >=0 and examen.puntajetotal <=125 ? 'Nivel 1' :
+                         examen.puntajetotal >=126 and examen.puntajetotal <=155 ? 'Nivel 2' :
+                         examen.puntajetotal >=156 and examen.puntajetotal <=190 ? 'Nivel 3' :
+                         examen.puntajetotal >=191 and examen.puntajetotal <=300 ? 'Nivel 4' : 'Error')}">
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materias -->
+    <div class="seccion">
+        <div class="titulo-seccion">Resultados por Materia</div>
+
+        <div class="grid-materias">
+
+            <!-- Comunicación Escrita -->
+            <div class="materia">
+                <h4>Comunicación Escrita</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.comunicacion}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.comunicacion <=125 ? 'Nivel 1' :
+                         examen.comunicacion <=155 ? 'Nivel 2' :
+                         examen.comunicacion <=190 ? 'Nivel 3' :
+                         examen.comunicacion <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Razonamiento -->
+            <div class="materia">
+                <h4>Razonamiento Cuantitativo</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.razonamiento}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.razonamiento <=125 ? 'Nivel 1' :
+                         examen.razonamiento <=155 ? 'Nivel 2' :
+                         examen.razonamiento <=190 ? 'Nivel 3' :
+                         examen.razonamiento <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Lectura Crítica -->
+            <div class="materia">
+                <h4>Lectura Crítica</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.lectura}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.lectura <=125 ? 'Nivel 1' :
+                         examen.lectura <=155 ? 'Nivel 2' :
+                         examen.lectura <=190 ? 'Nivel 3' :
+                         examen.lectura <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Ciudadanas -->
+            <div class="materia">
+                <h4>Competencias Ciudadanas</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.ciudadana}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.ciudadana <=125 ? 'Nivel 1' :
+                         examen.ciudadana <=155 ? 'Nivel 2' :
+                         examen.ciudadana <=190 ? 'Nivel 3' :
+                         examen.ciudadana <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Inglés -->
+            <div class="materia">
+                <h4>Inglés (Puntaje)</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.ingles}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.ingles <=125 ? 'Nivel 1' :
+                         examen.ingles <=155 ? 'Nivel 2' :
+                         examen.ingles <=190 ? 'Nivel 3' :
+                         examen.ingles <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Proyectos -->
+            <div class="materia">
+                <h4>Formulación de Proyectos</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.proyectos}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.proyectos <=125 ? 'Nivel 1' :
+                         examen.proyectos <=155 ? 'Nivel 2' :
+                         examen.proyectos <=190 ? 'Nivel 3' :
+                         examen.proyectos <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Pensamiento Científico -->
+            <div class="materia">
+                <h4>Pensamiento Científico</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.pcientifico}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.pcientifico <=125 ? 'Nivel 1' :
+                         examen.pcientifico <=155 ? 'Nivel 2' :
+                         examen.pcientifico <=190 ? 'Nivel 3' :
+                         examen.pcientifico <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Diseño de Software -->
+            <div class="materia">
+                <h4>Diseño de Software</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.dsoft}"></span></p>
+                <p><strong>Nivel:</strong>
+                    <span th:text="${examen.anulado ? '---' :
+                        (examen.dsoft <=125 ? 'Nivel 1' :
+                         examen.dsoft <=155 ? 'Nivel 2' :
+                         examen.dsoft <=190 ? 'Nivel 3' :
+                         examen.dsoft <=300 ? 'Nivel 4' : 'Error')}"></span>
+                </p>
+            </div>
+
+            <!-- Escala Inglés -->
+            <div class="materia">
+                <h4>Escala Inglés</h4>
+                <p><strong>Puntaje:</strong> <span th:text="${examen.nivelingles}"></span></p>
+                <p><strong>Nivel:</strong> ---</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="volver">
+        <a href="/coordinador/examenes" class="btn-volver">⬅ Volver</a>
+    </div>
+</div>
+
+</body>
+</html>
