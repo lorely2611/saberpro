@@ -235,6 +235,7 @@
     </div>
 </main>
 
+<!-- ===================== PAGINACIÓN ===================== -->
 <script>
     const filasTabla = Array.from(document.querySelectorAll('#tablaAlumnos tbody tr'));
     const filasPorPagina = 15;
@@ -272,28 +273,39 @@
     mostrarPagina(1);
 </script>
 
+<!-- ===================== BUSCADOR ===================== -->
 <script>
     const inputBusqueda = document.getElementById('busqueda');
     const filas = document.querySelectorAll('#tablaAlumnos tbody tr');
+    const contenedorPaginacion = document.getElementById('paginacion');
 
     inputBusqueda.addEventListener('keyup', function () {
         const filtro = this.value.toLowerCase();
 
-        filas.forEach(fila => {
-            const documento = fila.cells[0].textContent.toLowerCase();
-            const nombre = fila.cells[1].textContent.toLowerCase();
-            const correo = fila.cells[2].textContent.toLowerCase();
-            const registro = fila.cells[4].textContent.toLowerCase();
+        if (filtro.trim() !== "") {
+            // Oculta paginación cuando se busca
+            contenedorPaginacion.style.display = "none";
 
-            // Si coincide con documento, nombre, correo o registro → se muestra
-            const coincide =
-                documento.includes(filtro) ||
-                nombre.includes(filtro) ||
-                correo.includes(filtro) ||
-                registro.includes(filtro);
+            filas.forEach(fila => {
+                const documento = fila.cells[0].textContent.toLowerCase();
+                const nombre = fila.cells[1].textContent.toLowerCase();
+                const correo = fila.cells[2].textContent.toLowerCase();
+                const registro = fila.cells[4].textContent.toLowerCase();
 
-            fila.style.display = coincide ? '' : 'none';
-        });
+                const coincide =
+                    documento.includes(filtro) ||
+                    nombre.includes(filtro) ||
+                    correo.includes(filtro) ||
+                    registro.includes(filtro);
+
+                fila.style.display = coincide ? '' : 'none';
+            });
+
+        } else {
+            // Vuelve la paginación al borrar el texto
+            contenedorPaginacion.style.display = "block";
+            mostrarPagina(paginaActual);
+        }
     });
 </script>
 
