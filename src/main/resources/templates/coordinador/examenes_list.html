@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Exámenes</title>
+
+    <style>
+        :root {
+            --morado-oscuro: #4a148c;
+            --morado: #6a1b9a;
+            --morado-claro: #ba68c8;
+            --morado-suave: #f3e5f5;
+            --gris-texto: #2b2b2b;
+        }
+
+        body {
+            background-color: #faf7fc;
+            font-family: 'Open Sans', sans-serif;
+            color: var(--gris-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main { flex: 1; }
+
+        /* HEADER */
+        header {
+            background-color: var(--morado-oscuro);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        header h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+        .header-acciones { display: flex; gap: 10px; }
+
+        .btn-cerrar, .btn-volver {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+        .btn-volver {
+            background-color: white;
+            color: var(--morado-oscuro);
+            border: 2px solid white;
+        }
+        .btn-volver:hover { background-color: var(--morado-suave); }
+
+        .btn-cerrar {
+            background-color: var(--morado-claro);
+            color: white;
+        }
+        .btn-cerrar:hover { background-color: #a451b2; }
+
+        /* CONTENEDOR */
+        .contenedor-principal {
+            width: 95%;
+            max-width: 1400px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 35px 45px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        }
+
+        h2 {
+            color: var(--morado-oscuro);
+            margin-bottom: 15px;
+            border-bottom: 3px solid var(--morado-claro);
+            padding-bottom: 6px;
+        }
+
+        /* FILTRO */
+        .filtro {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .filtro label { font-weight: 700; color: var(--morado-oscuro); }
+
+        .filtro input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--morado-oscuro);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        .filtro input:focus {
+            border-color: var(--morado-claro);
+            box-shadow: 0 0 6px rgba(186,104,200,0.5);
+            outline: none;
+        }
+
+        /* TABLA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: auto;
+        }
+
+        th {
+            background: var(--morado-suave);
+            color: var(--morado-oscuro);
+            padding: 10px 14px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--morado-claro);
+            text-align: left;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f3e5f5;
+        }
+
+        tr.anulado {
+            background-color: #e0e0e0;
+            color: #555;
+        }
+
+        /* BOTONES TABLA */
+        .acciones-col a {
+            background-color: var(--morado);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 4px;
+            display: inline-block;
+            font-size: 0.85rem;
+            transition: 0.2s ease;
+        }
+
+        .acciones-col a:hover { transform: scale(1.05); }
+
+        .btn-eliminar {
+            background-color: #c62828 !important;
+        }
+        .btn-eliminar:hover { background-color: #a61e1e !important; }
+
+        /* INFORMES */
+        .btn-ver {
+            background-color: var(--morado-claro);
+            color: white;
+            padding: 6px 12px;
+            display: inline-block;
+            border-radius: 4px;
+        }
+        .btn-ver:hover {
+            background-color: #a751bd;
+            transform: scale(1.05);
+        }
+
+        .informe-col { text-align: center; }
+
+        /* BOTÓN CREAR */
+        .crear-container {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .btn-crear {
+            background-color: var(--morado);
+            color: white;
+            padding: 12px 26px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s ease;
+            display: inline-block;
+        }
+        .btn-crear:hover { background-color: var(--morado-oscuro); }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 15px 0;
+            background-color: var(--morado-oscuro);
+            color: white;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .contenedor-principal { padding: 20px; }
+            table { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Gestión de Exámenes</h1>
+
+    <div class="header-acciones">
+        <a href="/coordinador/panel" class="btn-volver">← Volver</a>
+        <a th:href="@{/logout}" class="btn-cerrar">Cerrar sesión</a>
+    </div>
+</header>
+
+
+<main>
+    <div class="contenedor-principal">
+
+        <h2>Exámenes</h2>
+
+        <!-- FILTRO -->
+        <div class="filtro">
+            <label for="busqueda">Buscar:</label>
+            <input type="text" id="busqueda" placeholder="Buscar por alumno o registro...">
+        </div>
+
+        <!-- TABLA EXÁMENES -->
+        <table id="tablaExamenes">
+            <thead>
+                <tr>
+                    <th>Registro</th>
+                    <th>Alumno</th>
+                    <th>Puntaje Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                    <th>Informe Único</th>
+                    <th>Informe Detallado</th>
+                    <th>Beneficios</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="e : ${examenes}" th:classappend="${e.anulado} ? 'anulado'">
+                    <td th:text="${e.usuario.registro}"></td>
+                    <td th:text="${e.usuario.pnomb + ' ' + e.usuario.papellido}"></td>
+                    <td th:text="${e.puntajetotal != null ? e.puntajetotal : '-'}"></td>
+                    <td th:text="${e.anulado} ? 'ANULADO' : 'ACTIVO'"></td>
+
+                    <td class="acciones-col">
+                        <a th:href="@{'/coordinador/examenes/editar/' + ${e.id}}">✏️ Editar</a>
+                        <a th:href="@{'/coordinador/examenes/eliminar/' + ${e.id}}" class="btn-eliminar"
+                           onclick="return confirm('¿Seguro que deseas eliminar este examen?')">🗑 Eliminar</a>
+                    </td>
+
+                    <td class="informe-col">
+                        <a th:href="@{'/coordinador/examenes/informes/alumno/' + ${e.id}}" class="btn-ver">Ver</a>
+                    </td>
+
+                    <td class="informe-col">
+                        <a th:href="@{'/coordinador/examenes/informes/detallado/' + ${e.id}}" class="btn-ver">Ver</a>
+                    </td>
+
+                    <td class="informe-col">
+                        <a th:href="@{'/coordinador/examenes/informes/beneficios/' + ${e.id}}" class="btn-ver">Ver</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <!-- PAGINACIÓN -->
+        <div id="paginacion" style="margin-top: 20px; text-align:center;"></div>
+
+        <!-- BOTÓN CREAR ABAJO -->
+        <div class="crear-container">
+            <a href="/coordinador/examenes/nuevo" class="btn-crear">➕ Crear Examen</a>
+        </div>
+
+    </div>
+</main>
+
+<script>
+    const inputBusqueda = document.getElementById('busqueda');
+    const filas = document.querySelectorAll('#tablaExamenes tbody tr');
+
+    inputBusqueda.addEventListener('keyup', function() {
+        const filtro = this.value.toLowerCase();
+        filas.forEach(fila => {
+            const nombre = fila.cells[1].textContent.toLowerCase();
+            const registro = fila.cells[0].textContent.toLowerCase();
+            fila.style.display = (nombre.includes(filtro) || registro.includes(filtro)) ? '' : 'none';
+        });
+    });
+</script>
+
+<script>
+    const filasTabla = Array.from(document.querySelectorAll('#tablaExamenes tbody tr'));
+    const filasPorPagina = 15;
+    let paginaActual = 1;
+    const totalPaginas = Math.ceil(filasTabla.length / filasPorPagina);
+
+    function mostrarPagina(pagina) {
+        const inicio = (pagina - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        filasTabla.forEach((fila, index) => {
+            fila.style.display = (index >= inicio && index < fin) ? '' : 'none';
+        });
+
+        actualizarBotones();
+    }
+
+    function actualizarBotones() {
+        const contenedor = document.getElementById('paginacion');
+        contenedor.innerHTML = '';
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'btn-pagina';
+            if (i === paginaActual) btn.disabled = true;
+
+            btn.addEventListener('click', () => {
+                paginaActual = i;
+                mostrarPagina(i);
+            });
+
+            contenedor.appendChild(btn);
+        }
+    }
+
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .btn-pagina {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border-radius: 5px;
+            border: 2px solid var(--morado-oscuro);
+            background: white;
+            color: var(--morado-oscuro);
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+        .btn-pagina:hover:not(:disabled) { background-color: var(--morado-suave); }
+        .btn-pagina:disabled {
+            background-color: var(--morado-oscuro);
+            color: white;
+            cursor: default;
+        }
+    `;
+    document.head.appendChild(style);
+
+    mostrarPagina(1);
+</script>
+
+</body>
+</html>

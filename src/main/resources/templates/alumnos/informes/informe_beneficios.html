@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Informe de Beneficios</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2eefb;
+            color: #1e1b2e;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .informe-container {
+            background-color: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 8px 18px rgba(90, 50, 150, 0.15);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+
+        /* ENCABEZADO */
+        .informe-header {
+            background-color: #5b2ecc;
+            color: #fff;
+            padding: 28px 30px;
+            text-align: center;
+        }
+        .informe-header h2 {
+            margin: 0;
+            font-size: 1.9rem;
+            font-weight: 700;
+        }
+
+        /* SECCIONES */
+        .seccion {
+            padding: 28px 35px;
+            border-bottom: 1px solid #e9defc;
+        }
+        .seccion:last-child { border-bottom: none; }
+
+        .seccion h3 {
+            margin-top: 0;
+            margin-bottom: 18px;
+            font-size: 1.25rem;
+            color: #5b2ecc;
+            border-left: 5px solid #7d4bff;
+            padding-left: 10px;
+            font-weight: 700;
+        }
+
+        /* DATOS DEL ALUMNO */
+        .datos-alumno {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 15px 20px;
+        }
+        .dato {
+            background-color: #eee7ff;
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.97rem;
+        }
+        .dato strong {
+            color: #5b2ecc;
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        /* TARJETA PUNTAJE */
+        .tarjeta-grande {
+            background-color: #eee7ff;
+            padding: 24px 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(90, 50, 150, 0.12);
+            transition: transform .2s ease, box-shadow .2s ease;
+            margin-top: 20px;
+        }
+        .tarjeta-grande:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(90, 50, 150, 0.18);
+        }
+
+        .tarjeta-grande .valor {
+            display: block;
+            font-size: 1.8rem;
+            margin-top: 10px;
+            color: #5b2ecc;
+            font-weight: 700;
+        }
+
+        .anulado {
+            color: #b40000 !important;
+            font-weight: bold;
+        }
+
+        /* BENEFICIOS */
+        .beneficio-box {
+            background-color: #f4eeff;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-top: 18px;
+            box-shadow: 0 3px 10px rgba(90, 50, 150, 0.1);
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1rem;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .beneficio-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(90, 50, 150, 0.18);
+        }
+
+        /* BOTÓN VOLVER */
+        .volver-container {
+            text-align: center;
+            padding: 25px 0;
+            background-color: #f2eefb;
+        }
+        .btn-volver {
+            display: inline-block;
+            background-color: #7d4bff;
+            color: #fff;
+            padding: 11px 26px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+        .btn-volver:hover {
+            background-color: #5b2ecc;
+        }
+
+        @media (max-width: 700px) {
+            .datos-alumno { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="informe-container">
+
+    <div class="informe-header">
+        <h2>Informe de Beneficios del Alumno</h2>
+    </div>
+
+    <!-- DATOS DEL ALUMNO -->
+    <div class="seccion">
+        <h3>Datos del Alumno</h3>
+
+        <div class="datos-alumno">
+            <div class="dato">
+                <strong>Nombre</strong>
+                <span th:text="${examen.usuario.pnomb + ' ' + examen.usuario.snomb + ' ' +
+                                examen.usuario.papellido + ' ' + examen.usuario.sapellido}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Documento</strong>
+                <span th:text="${examen.usuario.tdoc + ' ' + examen.usuario.numdoc}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Correo</strong>
+                <span th:text="${examen.usuario.correo}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Teléfono</strong>
+                <span th:text="${examen.usuario.telefono}"></span>
+            </div>
+
+            <div class="dato">
+                <strong>Registro</strong>
+                <span th:text="${examen.usuario.registro}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESUMEN / BENEFICIOS -->
+    <div class="seccion">
+        <h3>Resumen</h3>
+
+        <div class="tarjeta-grande">
+            Puntaje Total
+            <span class="valor"
+                  th:text="${examen.anulado ? 'ANULADO' : examen.puntajetotal}">
+            </span>
+        </div>
+
+        <div class="beneficio-box">
+            <span th:if="${examen.anulado}">---</span>
+
+            <span th:unless="${examen.anulado}"
+                  th:text="${examen.puntajetotal >=180 and examen.puntajetotal <=210 ?
+                           'Se exonera de la entrega del informe final de trabajo de grado, o de realizar Seminario de grado IV, con nota de 4.5' :
+                           examen.puntajetotal >=211 and examen.puntajetotal <=240 ?
+                           'Se exonera del informe final o Seminario de grado IV, con nota de 4.7 y beca del 50%' :
+                           examen.puntajetotal >=241 ?
+                           'Exoneración total: Nota 5.0 y beca del 100%' :
+                           'No ha ganado ningún beneficio'}">
+            </span>
+        </div>
+
+    </div>
+
+    <!-- VOLVER -->
+    <div class="volver-container">
+        <a th:href="@{'/alumno/panel/' + ${examen.usuario.id}}" class="btn-volver">⬅ Volver</a>
+    </div>
+
+</div>
+
+</body>
+</html>

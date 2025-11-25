@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Coordinadores</title>
+    <style>
+        body {
+            background-color: #faf8ff;
+            font-family: 'Open Sans', 'Segoe UI', sans-serif;
+            color: #2c1a47;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main { flex: 1; }
+
+        /* ===== HEADER ===== */
+        header {
+            background: linear-gradient(90deg, #4a148c, #7b1fa2);
+            color: white;
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.45rem;
+            font-weight: 600;
+        }
+
+        .header-acciones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-cerrar,
+        .btn-volver {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cerrar {
+            background-color: #b388ff;
+            color: #4a148c;
+        }
+
+        .btn-cerrar:hover {
+            background-color: #a06bff;
+            transform: scale(1.05);
+        }
+
+        .btn-volver {
+            background-color: #ffffff;
+            color: #4a148c;
+            border: 2px solid #4a148c;
+        }
+
+        .btn-volver:hover {
+            background-color: #f1e7ff;
+        }
+
+        /* ===== CONTENEDOR ===== */
+        .contenedor-principal {
+            width: 95%;
+            max-width: 1400px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 30px 40px;
+            border: 1px solid #e9ddff;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        h2 {
+            color: #4a148c;
+            margin-bottom: 12px;
+            border-bottom: 3px solid #b388ff;
+            padding-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .bienvenida {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4b3a6a;
+            margin-bottom: 16px;
+        }
+
+        /* ===== TABLA ===== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: #e9ddff;
+            color: #4a148c;
+            text-align: left;
+            padding: 10px 14px;
+            font-weight: 700;
+            border-bottom: 2px solid #b388ff;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #dbc8ff;
+            font-size: 0.95rem;
+        }
+
+        tr:hover { 
+            background-color: #f4edff;
+        }
+
+        /* ===== BOTONES ===== */
+        .acciones {
+            display: flex;
+            gap: 6px;
+        }
+
+        .btn-accion {
+            background-color: #7b1fa2;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .btn-accion:hover {
+            background-color: #621982;
+            transform: scale(1.05);
+        }
+
+        .btn-eliminar {
+            background-color: #c62828;
+        }
+
+        .btn-eliminar:hover {
+            background-color: #a61e1e;
+        }
+
+        /* ===== CREAR + PAGINACIÓN ===== */
+        .zona-inferior {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+
+        .btn-crear {
+            background-color: #4a148c;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s ease;
+        }
+
+        .btn-crear:hover {
+            background-color: #380f6b;
+            transform: scale(1.05);
+        }
+
+        .btn-pagina {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: 1px solid #7b1fa2;
+            border-radius: 4px;
+            background-color: #ffffff;
+            color: #7b1fa2;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s ease;
+        }
+
+        .btn-pagina:hover:not(:disabled) {
+            background-color: #e9ddff;
+        }
+
+        .btn-pagina:disabled {
+            background-color: #7b1fa2;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .contenedor-principal { padding: 20px; }
+            table { font-size: 0.85rem; }
+            .acciones { flex-direction: column; }
+            .zona-inferior { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Coordinadores</h1>
+
+    <div class="header-acciones">
+        <a href="/admin/panel" class="btn-volver">← Volver</a>
+        <a th:href="@{/logout}" class="btn-cerrar">Cerrar sesión</a>
+    </div>
+</header>
+
+<main>
+    <div class="contenedor-principal">
+        <div class="bienvenida">Bienvenido(a), Coordinador</div>
+
+        <h2>Coordinadores</h2>
+
+        <!-- TABLA -->
+        <table id="tablaCoordinadores">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${coordinadores}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${c.numdoc}"></td>
+                    <td th:text="${c.pnomb + ' ' + c.papellido}"></td>
+                    <td th:text="${c.correo}"></td>
+                    <td th:text="${c.telefono}"></td>
+
+                    <td class="acciones">
+                        <a th:href="@{'/admin/coordinadores/editar/' + ${c.id}}" class="btn-accion">✏️ Editar</a>
+                        <a th:href="@{'/admin/coordinadores/eliminar/' + ${c.id}}" 
+                           class="btn-accion btn-eliminar"
+                           onclick="return confirm('¿Seguro que deseas eliminar este coordinador?')">🗑 Eliminar</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- PAGINACIÓN + CREAR -->
+        <div class="zona-inferior">
+            <div id="paginacion"></div>
+
+            <a href="/admin/coordinadores/nuevo" class="btn-crear">➕ Crear Coordinador</a>
+        </div>
+    </div>
+</main>
+
+<!-- SCRIPT: PAGINACIÓN -->
+<script>
+    const filasTabla = Array.from(document.querySelectorAll('#tablaCoordinadores tbody tr'));
+    const filasPorPagina = 7;
+    let paginaActual = 1;
+    const totalPaginas = Math.ceil(filasTabla.length / filasPorPagina);
+
+    function mostrarPagina(pagina) {
+        const inicio = (pagina - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        filasTabla.forEach((fila, index) => {
+            fila.style.display = (index >= inicio && index < fin) ? '' : 'none';
+        });
+
+        actualizarBotones();
+    }
+
+    function actualizarBotones() {
+        const paginacion = document.getElementById('paginacion');
+        paginacion.innerHTML = '';
+
+        for (let i = 1; i <= totalPaginas; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'btn-pagina';
+
+            if (i === paginaActual) btn.disabled = true;
+
+            btn.addEventListener('click', () => {
+                paginaActual = i;
+                mostrarPagina(paginaActual);
+            });
+
+            paginacion.appendChild(btn);
+        }
+    }
+
+    mostrarPagina(paginaActual);
+</script>
+
+</body>
+</html>
